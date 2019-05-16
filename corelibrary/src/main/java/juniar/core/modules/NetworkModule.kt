@@ -6,7 +6,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import juniar.core.BaseNetworkRepository
 import juniar.core.helper.ConnectionLiveData
+import juniar.core.network.BaseNetworkService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -48,6 +50,14 @@ open class NetworkModule(
     @Provides
     @Singleton
     fun providesConnectionLiveData() = ConnectionLiveData(context)
+
+    @Provides
+    @Singleton
+    fun providesNetworkService(retrofit: Retrofit): BaseNetworkService = retrofit.create(BaseNetworkService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesRepository(networkService: BaseNetworkService) = BaseNetworkRepository(networkService)
 
     @Provides
     @Singleton
