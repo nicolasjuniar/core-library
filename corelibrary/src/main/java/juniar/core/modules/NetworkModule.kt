@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import juniar.core.helper.ConnectionLiveData
+import juniar.core.network.BaseNetworkRepository
+import juniar.core.network.BaseNetworkService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,6 +24,7 @@ open class NetworkModule(
     private val interceptor: Interceptor,
     private val context: Context
 ) {
+
     @Provides
     @Singleton
     fun providesGson(): Gson = GsonBuilder()
@@ -57,4 +60,12 @@ open class NetworkModule(
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okHttpClient)
         .build()
+
+    @Provides
+    @Singleton
+    fun providesNetworkService(retrofit: Retrofit): BaseNetworkService = retrofit.create(BaseNetworkService::class.java)
+
+    @Singleton
+    @Provides
+    open fun providesRepository(networkService: BaseNetworkService) = BaseNetworkRepository(networkService)
 }
